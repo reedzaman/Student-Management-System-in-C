@@ -1,4 +1,3 @@
-#define br printf("\n");
 #include<stdio.h>
 #include<ctype.h>
 #include<string.h>
@@ -110,7 +109,7 @@ void remove_student(char *id){
     loc_set = query(id);
 
     if(loc_set != -1){
-                /* Open all files the as needed */
+        /* Open all files as needed */
         if((file = fopen("info.dat","r"))==NULL){
             printf("Error opening file...");
             exit(1);
@@ -151,8 +150,13 @@ void remove_student(char *id){
 }
 
 
-int query(char *id_string){
 
+int query(char *id_string){
+    
+    /* to search for the location of the record in the record file 
+    it returns an integer value that is the position of the found record .
+    if not found it returns -1  ......................................*/
+        
     FILE *file;
     int i , last_loc , loc=0;
     char name_ch[51];
@@ -165,13 +169,17 @@ int query(char *id_string){
     fseek(file,0L,SEEK_END);
     last_loc = ftell(file) - 1;
 
-    /* explanation goes here */
+    /* this is tricky. this starts from the 0th position, and increament by length of one full record 
+    untill it reaches the end */
     for(fseek(file,0,SEEK_SET);ftell(file)<last_loc;fseek(file,loc += gap,SEEK_SET)){
-
+            
+            /* this part takes the first 10 bytes off the record and compares it with the id that we are looking for
+            if found then it returns the starting point of the record ...........................................*/
             for(i=0;i<10;i++) id_ch[i]=fgetc(file);
             id_ch[i] = '\0';
             cut_string(id_ch);
             if(!strcmp(id_string,id_ch)) return ftell(file)-(ftell(file)%gap);
+            
 
     }
     fclose(file);
@@ -181,7 +189,10 @@ int query(char *id_string){
 
 
 int show(int start_loc){
-
+    
+    /* this func takes the starting position of a record. which can be found by the query function
+    if the arg is -1 that means id not found . Else it outputs all the records accordingly */
+        
     int i;
     if(start_loc == -1) printf("\n\n\tNot found");
     else {
@@ -236,7 +247,9 @@ int show(int start_loc){
 }
 
 
+
 void print_search(){
+    /* An utility function to show the search page */
     system("cls");
     char id[11];
     prompt("Enter ID for query: ",id);
@@ -246,6 +259,7 @@ void print_search(){
 
 
 void print_remove(){
+    /* An utility function to show the record deleting page */
     system("cls");
     char id[11];
     prompt("Enter ID to remove: ",id);
@@ -253,7 +267,9 @@ void print_remove(){
 }
 
 
+
 int print_home(){
+    /* function to print the home page. pretty basic */
     int i ;
     char choice[1];
     printf("\n\n\n\n\n\t\t\t   1. Search Student \n");
@@ -264,9 +280,10 @@ int print_home(){
 
     gets(choice);
     i = atoi(choice);
-
     return i;
 }
+
+
 
 int main(){
     int choice;
