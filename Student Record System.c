@@ -56,7 +56,9 @@ void prompt(char *str,char *base){
     gets(base);
 }
 
-
+void print_hello(){
+    printf(" Hello ");
+}
 
 void add_student(){
     system("cls");
